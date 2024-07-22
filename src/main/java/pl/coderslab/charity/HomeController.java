@@ -12,7 +12,9 @@ import pl.coderslab.charity.encje.Institution;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -45,29 +47,37 @@ public class HomeController {
     @GetMapping("/form-confirmation")
     public String formConfirmation(Model model){
 
-
         return "form-confirmation";
     }
 
 
+
     @PostMapping("/form-confirmation")
     public String formConfirmationPost(@RequestParam("quantity") Integer quantity,
-                                       @RequestParam("categories") List<Long> categoryIds,
+                                       @RequestParam("categories") List<String> categoryIds,
                                        @RequestParam("institution") Integer institutionId,
                                        @RequestParam("street") String street,
                                        @RequestParam("city") String city,
                                        @RequestParam("zipCode") String zipCode,
-                                       @RequestParam("pickUpDate") LocalDate pickUpDate,
-                                       @RequestParam("pickUpTime") LocalTime pickUpTime,
+                                       @RequestParam("phone") String phone,
+                                       @RequestParam("pickUpDate") String pickUpDateString,
+                                       @RequestParam("pickUpTime") String pickUpTimeString,
                                        @RequestParam("pickUpComment") String pickUpComment) {
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        LocalDate pickUpDate = LocalDate.parse(pickUpDateString, dateFormatter);
+        LocalTime pickUpTime = LocalTime.parse(pickUpTimeString, timeFormatter);
 
         Institution institution = institutionRepository.findById(institutionId).orElseThrow();
 
-        List<Category> categories = categoryRepository.findAllById(categoryIds);
+
+
 
         Donation donation = new Donation();
         donation.setQuantity(quantity);
-        donation.setCategories(categories);
+        donation.setPhone(phone);
         donation.setInstitution(institution);
         donation.setStreet(street);
         donation.setCity(city);
@@ -78,6 +88,7 @@ public class HomeController {
 
         donationRepository.save(donation);
 
+        System.out.println("donation = " + donation);
         return "redirect:/confirmation-page";
     }
 
@@ -93,4 +104,17 @@ public class HomeController {
         return "register";
     }
 
+    @GetMapping("/form")
+    public String showDonationForm(Model model) {
+        model.addAttribute("donation", new Donation());
+        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("institutions", institutionRepository.findAll());
+        return "form";
+    }
+
+    @PostMapping("/submit")
+    public String submitDonation(Donation donation) {
+        donationRepository.save(donation);
+        return "redirect:/form-confirmation";
+    }
 }

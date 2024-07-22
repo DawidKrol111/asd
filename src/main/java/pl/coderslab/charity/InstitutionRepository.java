@@ -11,4 +11,5 @@ public interface InstitutionRepository extends JpaRepository<Institution, Intege
     @Query(value = "SELECT * FROM institution ORDER BY RAND() LIMIT 4", nativeQuery = true)
     List<Institution> findRandomInstitutions();
 
+
 }
