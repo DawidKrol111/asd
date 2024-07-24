@@ -8,9 +8,4 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class DonationController {
 
 
-    @GetMapping("/add")
-    public String formConfirmation(Model model){
-        return "form";
-    }
-
 }

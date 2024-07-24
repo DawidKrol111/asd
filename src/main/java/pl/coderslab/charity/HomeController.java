@@ -44,55 +44,6 @@ public class HomeController {
     }
 
 
-    @GetMapping("/form-confirmation")
-    public String formConfirmation(Model model){
-
-        return "form-confirmation";
-    }
-
-
-
-    @PostMapping("/form-confirmation")
-    public String formConfirmationPost(@RequestParam("quantity") Integer quantity,
-                                       @RequestParam("categories") List<String> categoryIds,
-                                       @RequestParam("institution") Integer institutionId,
-                                       @RequestParam("street") String street,
-                                       @RequestParam("city") String city,
-                                       @RequestParam("zipCode") String zipCode,
-                                       @RequestParam("phone") String phone,
-                                       @RequestParam("pickUpDate") String pickUpDateString,
-                                       @RequestParam("pickUpTime") String pickUpTimeString,
-                                       @RequestParam("pickUpComment") String pickUpComment) {
-
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-        LocalDate pickUpDate = LocalDate.parse(pickUpDateString, dateFormatter);
-        LocalTime pickUpTime = LocalTime.parse(pickUpTimeString, timeFormatter);
-
-        Institution institution = institutionRepository.findById(institutionId).orElseThrow();
-
-
-
-
-        Donation donation = new Donation();
-        donation.setQuantity(quantity);
-        donation.setPhone(phone);
-        donation.setInstitution(institution);
-        donation.setStreet(street);
-        donation.setCity(city);
-        donation.setZipCode(zipCode);
-        donation.setPickUpDate(pickUpDate);
-        donation.setPickUpTime(pickUpTime);
-        donation.setPickUpComment(pickUpComment);
-
-        donationRepository.save(donation);
-
-        System.out.println("donation = " + donation);
-        return "redirect:/confirmation-page";
-    }
-
-
 
     @GetMapping("/login")
     public String login(Model model){
@@ -104,6 +55,12 @@ public class HomeController {
         return "register";
     }
 
+
+    @GetMapping("/form-confirmation")
+    public String confirmation(Model model){
+        return "form-confirmation";
+    }
+
     @GetMapping("/form")
     public String showDonationForm(Model model) {
         model.addAttribute("donation", new Donation());
@@ -112,9 +69,13 @@ public class HomeController {
         return "form";
     }
 
+
     @PostMapping("/submit")
-    public String submitDonation(Donation donation) {
+    public String submitDonation(Donation donation, Model model) {
+
+        System.out.println("\"sdsdsd\" = " + "sdsdsd");
         donationRepository.save(donation);
-        return "redirect:/form-confirmation";
+        model.addAttribute(donation);
+        return "form-confirmation";
     }
 }
