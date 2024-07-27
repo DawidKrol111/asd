@@ -1,4 +1,4 @@
-package pl.coderslab.charity.encje;
+package pl.coderslab.charity.Entities;
 
 import lombok.Getter;
 import lombok.Setter;

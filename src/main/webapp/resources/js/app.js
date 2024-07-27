@@ -1,8 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-
-  /**
-   * Form Select
-   */
+  // Class FormSelect
   class FormSelect {
     constructor($el) {
       this.$el = $el;
@@ -17,26 +14,21 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     createElements() {
-      // Input for value
       this.valueInput = document.createElement("input");
       this.valueInput.type = "text";
       this.valueInput.name = this.$el.name;
 
-      // Dropdown container
       this.dropdown = document.createElement("div");
       this.dropdown.classList.add("dropdown");
 
-      // List container
       this.ul = document.createElement("ul");
 
-      // All list options
       this.options.forEach((el, i) => {
         const li = document.createElement("li");
         li.dataset.value = el.value;
         li.innerText = el.innerText;
 
         if (i === 0) {
-          // First clickable option
           this.current = document.createElement("div");
           this.current.innerText = el.innerText;
           this.dropdown.appendChild(this.current);
@@ -57,7 +49,6 @@ document.addEventListener("DOMContentLoaded", function() {
         const target = e.target;
         this.dropdown.classList.toggle("selecting");
 
-        // Save new value only when clicked on li
         if (target.tagName === "LI") {
           this.valueInput.value = target.dataset.value;
           this.current.innerText = target.innerText;
@@ -65,35 +56,12 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     }
   }
+
   document.querySelectorAll(".form-group--dropdown select").forEach(el => {
     new FormSelect(el);
   });
 
-  /**
-   * Hide elements when clicked on document
-   */
-  document.addEventListener("click", function(e) {
-    const target = e.target;
-    const tagName = target.tagName;
-
-    if (target.classList.contains("dropdown")) return false;
-
-    if (tagName === "LI" && target.parentElement.parentElement.classList.contains("dropdown")) {
-      return false;
-    }
-
-    if (tagName === "DIV" && target.parentElement.classList.contains("dropdown")) {
-      return false;
-    }
-
-    document.querySelectorAll(".form-group--dropdown .dropdown").forEach(el => {
-      el.classList.remove("selecting");
-    });
-  });
-
-  /**
-   * Switching between form steps
-   */
+  // Class FormSteps
   class FormSteps {
     constructor(form) {
       this.$form = form;
@@ -109,19 +77,12 @@ document.addEventListener("DOMContentLoaded", function() {
       this.init();
     }
 
-    /**
-     * Init all methods
-     */
     init() {
       this.events();
       this.updateForm();
     }
 
-    /**
-     * All events that are happening in form
-     */
     events() {
-      // Next step
       this.$next.forEach(btn => {
         btn.addEventListener("click", e => {
           e.preventDefault();
@@ -130,7 +91,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
       });
 
-      // Previous step
       this.$prev.forEach(btn => {
         btn.addEventListener("click", e => {
           e.preventDefault();
@@ -139,18 +99,11 @@ document.addEventListener("DOMContentLoaded", function() {
         });
       });
 
-      // Form submit
       this.$form.querySelector("form").addEventListener("submit", e => this.submit(e));
     }
 
-    /**
-     * Update form front-end
-     * Show next or previous section etc.
-     */
     updateForm() {
       this.$step.innerText = this.currentStep;
-
-      // TODO: Validation
 
       this.slides.forEach(slide => {
         slide.classList.remove("active");
@@ -162,13 +115,50 @@ document.addEventListener("DOMContentLoaded", function() {
 
       this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 5;
       this.$step.parentElement.hidden = this.currentStep >= 5;
-
-      // TODO: get data from inputs and show them in summary
     }
-
   }
+
   const form = document.querySelector(".form--steps");
   if (form !== null) {
     new FormSteps(form);
+  }
+
+  var lastStepButtons = document.getElementsByClassName('lastStep');
+
+  // Dodaj event listener do każdego elementu z klasą "lastStep"
+  for (var i = 0; i < lastStepButtons.length; i++) {
+    lastStepButtons[i].addEventListener('click', getQuantity);
+  }
+
+  function getQuantity() {
+    // Pobierz wszystkie pola typu radio z name="institution"
+    var radios = document.getElementsByName("institution");
+    var selectedValue = null;
+    var selectedName = null;
+
+    // Iteracja przez pola radio aby znaleźć zaznaczone
+    for (var i = 0; i < radios.length; i++) {
+      if (radios[i].checked) {
+        selectedValue = radios[i].value;
+        selectedName = radios[i].getAttribute('data-name');
+        break;
+      }
+    }
+
+    // Wyświetl nazwę zaznaczonej instytucji w divie
+    var institutionOutput = document.getElementById('whatInstitution');
+    if (selectedName !== null) {
+      institutionOutput.innerHTML = "Instytucja: " + selectedName;
+    } else {
+      institutionOutput.innerHTML = "Nie wybrano żadnej instytucji.";
+    }
+
+    // Pobierz wartość z pola input
+    var inputElement = document.getElementById('quantity');
+    var quantityValue = inputElement.value;
+
+    // Wyświetl wartość z pola input w divie
+    var resultDiv = document.getElementById('quantityOutput');
+    resultDiv.innerHTML = "Ilość worków: " + quantityValue;
   }
 });

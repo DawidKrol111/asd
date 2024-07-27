@@ -4,21 +4,18 @@
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ include file="header.jsp" %>
 <section class="login-page">
-    <h2>Zaloguj się</h2>
-    <form>
-        <div class="form-group">
-            <input type="email" name="email" placeholder="Email" />
-        </div>
-        <div class="form-group">
-            <input type="password" name="password" placeholder="Hasło" />
-            <a href="#" class="btn btn--small btn--without-border reset-password">Przypomnij hasło</a>
-        </div>
+    <div class="container">
+        <h2>Zaloguj się</h2>
+        <form method="post">
+            <div class="form-group"><label> Login : <input type="text" name="username"/> </label></div>
+            <div class="form-group"><label> Hasło: <input type="password" name="password"/> </label></div>
+            <div class="form-group"> <button type="submit">Zaloguj</button></div>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
+        <div class="spacer"></div>
+        <a href="/problem"> Nie pamiętam hasła</a>
 
-        <div class="form-group form-group--buttons">
-            <a href="#" class="btn btn--without-border">Załóż konto</a>
-            <button class="btn" type="submit">Zaloguj się</button>
-        </div>
-    </form>
+    </div>
 </section>
 
 <%@ include file="footer.jsp" %>

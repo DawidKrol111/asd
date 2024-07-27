@@ -27,7 +27,9 @@
     <div class="form--steps-container">
         <div class="form--steps-counter">Krok <span>1</span>/4</div>
 
-        <form action="/submit" method="post">
+        <form action="/donation" method="post">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
             <!-- STEP 1: class .active is switching steps -->
             <div data-step="1" class="active">
                 <h3>Zaznacz co chcesz oddać:</h3>
@@ -74,12 +76,12 @@
 
                 <c:forEach var="institution" items="${institutions}">
                     <label>
-                        <input type="radio" name="institution" value="${institution.id}"/>
+                        <input type="radio" name="institution" value="${institution.id}" data-name="${institution.name}"/>
                         <span class="checkbox radio"></span>
                         <span class="description">
-                        <div class="title">${institution.name}</div>
-                        <div class="subtitle">${institution.description}</div>
-                    </span>
+            <div class="title">${institution.name}</div>
+            <div class="subtitle">${institution.description}</div>
+        </span>
                     </label>
                 </c:forEach>
             </div>
@@ -134,10 +136,21 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group form-group--buttons">
+                    <button type="button" class="btn prev-step">Wstecz</button>
+                    <button type="button" class="btn next-step lastStep">Dalej</button>
+                </div>
+            </div>
+            <div data-step="5">
+                <div id = "quantityOutput">asdasdsad</div>
+                <div id = "whatInstitution">asdasdsad</div>
+
                 <div class="form-group form-group--buttons">
                     <button type="button" class="btn prev-step">Wstecz</button>
                     <button type="submit" class="btn">Potwierdzam</button>
                 </div>
+
             </div>
         </form>
     </div>
